@@ -1,36 +1,38 @@
-## Usage
+![Ozone](./src/assets/logo.png)
+# Ozone: 3D spin-off of "Siliconja"
 
-Those templates dependencies are maintained via [pnpm](https://pnpm.io) via `pnpm up -Lri`.
+If you have visited `Siliconja`, then you might immedietly understand which direction is this. `Ozone` is a high-performance, minimal scientific instrument designed for  3D spatial reconstruction and visual analytics of *compounds and molecules*. Built as an advanced molecular spin-off of the *Siliconja's* ideas and structures, *Ozone* allows researchers, developers, and students or anyone to give just name and immediately see physics-based 3D atomic structure directly in the browser.
 
-This is the reason you see a `pnpm-lock.yaml`. That being said, any package manager will work. This file can be safely be removed once you clone a template.
+Built by PubChem REST API, the platform fetches raw spatial coordinate data, processes molecular geometry vectors, and renders full WebGL assemblies on a sterile, pitch-black tactical interface.
 
-```bash
-$ npm install # or pnpm install or yarn install
+```
+┌───────────────┐      ┌─────────────┐      ┌─────────────────────────┐      ┌───────────────────┐
+│     INPUT     │ ───> │ PUBCHEM API │ ───> │        RENDERER         │ ───> │        VIEW       │
+└───────────────┘      └─────────────┘      └─────────────────────────┘      └───────────────────┘
+                                                         │
+                                                         └──> [ ERROR ]
+
 ```
 
-### Learn more on the [Solid Website](https://solidjs.com) and come chat with us on our [Discord](https://discord.com/invite/solidjs)
+### Core Principles
+It is a simple and interactive website designed for exploring molecular structures in 3D. All you need to do is enter the name of the molecule; any molecule, and upon pressing enter, it verifies it using PubChem. Once fetched, the molecule is rendered in a fully interactive 3D view. Users can switch between Ball-and-Stick and Sphere visualization modes based on their preference, making it easy to examine molecular structures from different perspectives. The experience is straightforward, responsive, and focused on making molecular visualization accessible and enjoyable. The purpose is just to make chemistry intriguing and knowledgable.
 
-## Available Scripts
+### Features
 
-In the project directory, you can run:
+* **Dual-Mode Viewport:** Live terminal controls to toggle configurations instantly between **Ball & Stick** and volumetric **Space Filling** representations.
+* **Organic Dataset Guard:** Auto-intercepts organic compounds that lack pre-calculated 3D conformation models to prevent canvas layout corruption.
+* That's it
 
-### `npm run dev` or `npm start`
+### Technical Stack
+* **Engine:** Three.js / WebGL Rendering Pipeline
+* **Core:** SolidJS (Signals & Contextual Resources)
+* **Interface:** SolidJS(JSX), TailwindCSS,
+* **Data Layer:** PubChem PUG REST API
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Note
+* It does not supports **inorganic or too large compunds**
+* There are be mismatch of **number of bonds**
+* 
+---
 
-The page will reload if you make edits.<br>
-
-### `npm run build`
-
-Builds the app for production to the `dist` folder.<br>
-It correctly bundles Solid in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-## Deployment
-
-You can deploy the `dist` folder to any static host provider (netlify, surge, now, etc.)
-
-## This project was created with the [Solid CLI](https://github.com/solidjs-community/solid-cli)
+**Developed by @codersilicon**
