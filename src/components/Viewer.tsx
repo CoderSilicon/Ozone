@@ -208,8 +208,8 @@ const Viewer = (props: ViewerProps) => {
     );
 
     const controls = new OrbitControls(camera, renderer.domElement);
-    controls.minDistance = 2;
-    controls.maxDistance = 50;
+    controls.minDistance = 3;
+    controls.maxDistance = 30;
     controls.enablePan = false;
     controls.enableDamping = true;
 

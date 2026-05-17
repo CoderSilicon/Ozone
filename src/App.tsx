@@ -14,11 +14,11 @@ const App = () => {
   return (
     <div class="bg-black w-screen h-screen fixed inset-0 overflow-hidden text-white select-none">
       {/* Search */}
-      <div class="absolute top-8 left-8 z-50">
+      <div class="absolute top-4 left-4 right-4 md:top-8 md:left-8 md:right-auto z-50">
         <input
           type="text"
-          placeholder="Enter the molecule name (eg: Water, Caffeine, Benzene).."
-          class="p-2.5 border border-zinc-800 bg-black/40 backdrop-blur-md font-mono text-white w-[500px] text-sm focus:outline-none focus:border-zinc-500 transition-colors"
+          placeholder="Enter the molecule name (eg: Water).."
+          class="p-2.5 border border-zinc-800 bg-black/40 backdrop-blur-md font-mono text-white w-full md:w-[500px] text-sm focus:outline-none focus:border-zinc-500 transition-colors"
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               const target = e.currentTarget;
@@ -39,8 +39,8 @@ const App = () => {
           moleculeData()?.atoms
         }
       >
-        <div class="absolute top-8 right-8 z-50 flex flex-col gap-3 items-end">
-          <div class="font-mono text-xs tracking-wider">
+        <div class="absolute top-[4.5rem] right-4 md:top-8 md:right-8 z-50 flex flex-col gap-2 md:gap-3 items-end">
+          <div class="font-mono text-[0.65rem] md:text-xs tracking-wider bg-black/40 md:bg-transparent px-2 py-1 md:p-0 backdrop-blur-md md:backdrop-blur-none border md:border-none border-zinc-800 rounded">
             MODEL VIEW:{" "}
             <span class="text-emerald-400 font-bold">
               {viewMode().toUpperCase()}
@@ -50,7 +50,7 @@ const App = () => {
             onClick={() =>
               setViewMode((v) => (v === "jointing" ? "bulgy" : "jointing"))
             }
-            class="font-mono text-xs tracking-widest uppercase border border-zinc-800 bg-black/40 backdrop-blur-md text-zinc-200 py-1.5 px-4 cursor-pointer hover:bg-zinc-900 hover:text-white border-zinc-100 transition-colors"
+            class="font-mono text-[0.65rem] md:text-xs tracking-widest uppercase border border-zinc-800 bg-black/60 backdrop-blur-md text-zinc-200 py-1.5 px-3 md:px-4 cursor-pointer hover:bg-zinc-900 hover:text-white transition-colors"
           >
             Switch View
           </button>
@@ -66,12 +66,12 @@ const App = () => {
           moleculeData()?.atoms
         }
       >
-        <div class="absolute bottom-8 left-8 z-50 flex flex-col gap-4 max-w-sm bg-black/60 backdrop-blur-md p-4 border border-zinc-800 font-mono">
+        <div class="absolute bottom-4 left-4 md:bottom-8 md:left-8 z-50 flex flex-col gap-3 md:gap-4 w-[65vw] sm:w-[50vw] md:w-auto md:max-w-sm bg-black/60 backdrop-blur-md p-3 md:p-4 border border-zinc-800 font-mono">
           <div class="flex flex-col gap-2">
-            <div class="text-[0.65rem] tracking-[0.2em] text-zinc-500 uppercase font-bold">
+            <div class="text-[0.6rem] md:text-[0.65rem] tracking-[0.2em] text-zinc-500 uppercase font-bold">
               Detected Elements
             </div>
-            <div class="flex flex-col gap-2 max-h-[40vh] overflow-y-auto pr-2">
+            <div class="flex flex-col gap-2 max-h-[35vh] md:max-h-[40vh] overflow-y-auto pr-2">
               {(() => {
                 const uniqueElements = [
                   ...new Set(moleculeData()?.atoms.map((a: any) => a.element)),
@@ -83,21 +83,21 @@ const App = () => {
                     : "#ffffff";
                   const elementName = info?.name || "Unknown";
                   return (
-                    <div class="flex items-center gap-3 text-xs text-zinc-300">
+                    <div class="flex items-center gap-2 md:gap-3 text-xs text-zinc-300">
                       <div
                         style={{
                           "background-color": `${elementColor}15`,
                           "border-color": elementColor,
                         }}
-                        class="w-8 h-8 flex items-center justify-center font-bold text-sm border-l-2 text-white"
+                        class="w-6 h-6 md:w-8 md:h-8 flex items-center justify-center font-bold text-xs md:text-sm border-l-2 text-white shrink-0"
                       >
                         {symbol.toUpperCase()}
                       </div>
-                      <div class="flex flex-col">
-                        <span class="text-white text-[0.75rem] font-medium tracking-wide uppercase">
+                      <div class="flex flex-col truncate">
+                        <span class="text-white text-[0.65rem] md:text-[0.75rem] font-medium tracking-wide uppercase truncate">
                           {elementName}
                         </span>
-                        <span class="text-[0.6rem] text-zinc-500">
+                        <span class="text-[0.55rem] md:text-[0.6rem] text-zinc-500">
                           {elementColor.toUpperCase()}
                         </span>
                       </div>

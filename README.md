@@ -32,7 +32,7 @@ It is a simple and interactive website designed for exploring molecular structur
 ### Note
 * It does not supports **inorganic or too large compunds**
 * There are be mismatch of **number of bonds**
-* 
+* That's it.
 ---
 
 **Developed by @codersilicon**
