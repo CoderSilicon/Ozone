@@ -247,7 +247,7 @@ const Viewer = (props: ViewerProps) => {
     });
   });
 
-  return <div ref={containerRef} style={{ width: "100%", height: "100%" }} />;
+  return <div ref={containerRef} class="h-full w-full bg-black" />;
 };
 
 export default Viewer;

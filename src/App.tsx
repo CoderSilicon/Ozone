@@ -68,7 +68,7 @@ const App = () => {
       >
         <div class="absolute bottom-4 left-4 md:bottom-8 md:left-8 z-50 flex flex-col gap-3 md:gap-4 w-[65vw] sm:w-[50vw] md:w-auto md:max-w-sm bg-black/60 backdrop-blur-md p-3 md:p-4 border border-zinc-800 font-mono">
           <div class="flex flex-col gap-2">
-            <div class="text-[0.6rem] md:text-[0.65rem] tracking-[0.2em] text-zinc-500 uppercase font-bold">
+            <div class="text-[0.6rem] md:text-[0.65rem] tracking-[0.2em] text-zinc-500 font-bold">
               Detected Elements
             </div>
             <div class="flex flex-col gap-2 max-h-[35vh] md:max-h-[40vh] overflow-y-auto pr-2">
@@ -94,7 +94,7 @@ const App = () => {
                         {symbol.toUpperCase()}
                       </div>
                       <div class="flex flex-col truncate">
-                        <span class="text-white text-[0.65rem] md:text-[0.75rem] font-medium tracking-wide uppercase truncate">
+                        <span class="text-white text-[0.65rem] md:text-[0.75rem] font-medium tracking-wide truncate">
                           {elementName}
                         </span>
                         <span class="text-[0.55rem] md:text-[0.6rem] text-zinc-500">
@@ -146,10 +146,10 @@ const App = () => {
                 <div class="text-red-500 font-bold tracking-[0.25em]  text-[0.68rem] border border-red-900/50 bg-red-950/20 px-4 py-1.5">
                   ERROR :: 404
                 </div>
-                <div class="text-zinc-400 text-[0.72rem] mt-3 tracking-wide leading-relaxed font-mono px-4">
-                  Either the compound is organic and PubChem does not have a 3D
-                  structural conformation map available for this record, or the
-                  search query is structurally invalid.
+                <div class="text-zinc-200 text-[0.72rem] mt-3 tracking-wide leading-relaxed font-mono px-4">
+                  Either the compound is inorganic and PubChem does not have a 3D
+                  structural conformation map available for this record, or it is too large to store information about or last, the
+                  search query itself is wrong.
                 </div>
               </div>
             </div>
@@ -167,7 +167,7 @@ const App = () => {
 
         // Default
         return (
-          <div class="absolute inset-0 flex items-center justify-center text-zinc-600 font-mono text-xs uppercase tracking-[0.15em] bg-black">
+          <div class="absolute inset-0 flex items-center justify-center text-zinc-600 font-mono text-xs  tracking-[0.15em] bg-black">
             Enter a molecule name to visualize
           </div>
         );
