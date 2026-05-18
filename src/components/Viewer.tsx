@@ -18,7 +18,6 @@ const Viewer = (props: ViewerProps) => {
   const moleculeGroup = new THREE.Group();
 
   const build = (data: any, mode: ViewMode) => {
-    // Clean up old geometry
     moleculeGroup.traverse((child) => {
       if (child instanceof THREE.Mesh) {
         child.geometry.dispose();
@@ -34,17 +33,14 @@ const Viewer = (props: ViewerProps) => {
 
     moleculeGroup.position.set(0, 0, 0);
 
-    // --- ATOM RENDERING WITH PROPORTIONAL RADII ---
+    // Space Filling Model Renderer
     data.atoms.forEach((atom: any) => {
       const elementInfo = getElementInfo(atom.element);
       const color = elementInfo?.color || 0xffffff;
 
-      // 2. BULLETPROOF LOOKUP
-      // Ensure the string is uppercase so "c" and "C" both match properly
-      const elemSymbol = (atom.element || "C").toUpperCase();
-      const vdwRadius = getElementRadius(elemSymbol) || 1.5; // Fallback to 1.50 ONLY if missing
+      const elemSymbol = (atom.element || "X").toUpperCase();
+      const vdwRadius = getElementRadius(elemSymbol) || 1.5;
 
-      // Scale down proportionally for jointing mode
       const finalScale = mode === "bulgy" ? vdwRadius * 0.85 : vdwRadius * 0.22;
 
       const atomGeom = new THREE.SphereGeometry(finalScale, 64, 64);
@@ -61,13 +57,8 @@ const Viewer = (props: ViewerProps) => {
       moleculeGroup.add(mesh);
     });
 
-    // --- MULTI-BOND RENDERING (JOINTING MODE) ---
-    // --- MULTI-BOND RENDERING (JOINTING MODE) ---
+    // Ball & Stick Model Renderer
     if (mode === "jointing" && data.bonds) {
-      // DEBUGGER: Look in your browser console!
-      // If this prints 'undefined' or '1' for every bond, your API fetcher isn't saving the bond order!
-      console.log("First bond data check:", data.bonds[0]);
-
       data.bonds.forEach((bondData: any, index: number) => {
         const atom1Idx = Array.isArray(bondData)
           ? bondData[0]
@@ -76,11 +67,14 @@ const Viewer = (props: ViewerProps) => {
           ? bondData[1]
           : bondData.atoms[1];
 
-        // TEMPORARY BENZENE OVERRIDE: To prove the graphics work right now.
-        // Benzene bonds alternate: 2, 1, 2, 1, 2, 1. (Remove this after testing!)
+        // 1. Fetch the specific colors for the two connecting atoms
+        const color1 =
+          getElementInfo(data.atoms[atom1Idx].element)?.color || 0xffffff;
+        const color2 =
+          getElementInfo(data.atoms[atom2Idx].element)?.color || 0xffffff;
+
         let bondOrder = bondData.order || 1;
         if (data.atoms.length === 12) {
-          // Rough check if it's Benzene (6C, 6H)
           if (index === 0 || index === 2 || index === 4) bondOrder = 2;
         }
 
@@ -88,23 +82,25 @@ const Viewer = (props: ViewerProps) => {
         const v2 = new THREE.Vector3(...data.atoms[atom2Idx].pos);
 
         const dist = v1.distanceTo(v2);
-        const bondRadius = 0.05; // Slightly thinner for cleaner multi-bonds
-        const cylGeom = new THREE.CylinderGeometry(
-          bondRadius,
-          bondRadius,
-          dist,
+        const bondRadius = 0.05;
+
+        const halfCylGeom = new THREE.CylinderGeometry(
+          bondRadius * 1.5,
+          bondRadius * 1.5,
+          dist / 2,
           32,
         );
-        const bondMat = new THREE.MeshStandardMaterial({
-          color: 0x4a4a4a,
+
+        const bondMat1 = new THREE.MeshStandardMaterial({
+          color: color1,
           roughness: 0.5,
-        }); // Lighter grey
+        });
+        const bondMat2 = new THREE.MeshStandardMaterial({
+          color: color2,
+          roughness: 0.5,
+        });
 
         const direction = new THREE.Vector3().subVectors(v2, v1).normalize();
-
-        // --- THE PRO FIX: Flat Ring Orientation ---
-        // Instead of a random axis, point toward the center of the molecule.
-        // This guarantees double bonds lay perfectly flat inside aromatic rings!
         const bondCenter = v1.clone().lerp(v2, 0.5);
         let toCenter = new THREE.Vector3(0, 0, 0).sub(bondCenter).normalize();
 
@@ -112,26 +108,34 @@ const Viewer = (props: ViewerProps) => {
           .crossVectors(direction, toCenter)
           .normalize();
 
-        // Fallback if the bond passes exactly through [0,0,0]
         if (perpendicular.lengthSq() < 0.01) {
           perpendicular = new THREE.Vector3()
             .crossVectors(direction, new THREE.Vector3(0, 1, 0))
             .normalize();
         }
 
-        // Wider spacing so they don't merge visually
         const offsetSpacing = 0.22;
 
         const createBondMesh = (offsetVector: THREE.Vector3) => {
-          const bondMesh = new THREE.Mesh(cylGeom, bondMat);
-          const midPoint = bondCenter.clone().add(offsetVector);
+          const center1 = v1.clone().lerp(bondCenter, 0.5).add(offsetVector);
+          const center2 = v2.clone().lerp(bondCenter, 0.5).add(offsetVector);
 
-          bondMesh.position.copy(midPoint);
-          bondMesh.quaternion.setFromUnitVectors(
+          const bondMesh1 = new THREE.Mesh(halfCylGeom, bondMat1);
+          bondMesh1.position.copy(center1);
+          bondMesh1.quaternion.setFromUnitVectors(
             new THREE.Vector3(0, 1, 0),
             direction,
           );
-          moleculeGroup.add(bondMesh);
+
+          const bondMesh2 = new THREE.Mesh(halfCylGeom, bondMat2);
+          bondMesh2.position.copy(center2);
+          bondMesh2.quaternion.setFromUnitVectors(
+            new THREE.Vector3(0, 1, 0),
+            direction,
+          );
+
+          moleculeGroup.add(bondMesh1);
+          moleculeGroup.add(bondMesh2);
         };
 
         if (bondOrder === 1) {
@@ -155,8 +159,7 @@ const Viewer = (props: ViewerProps) => {
       });
     }
 
-    // --- AUTO-CENTERING & ZOOM ---
-    if (!camera) return; // Guard clause to prevent crashes
+    if (!camera) return;
 
     const box = new THREE.Box3().setFromObject(moleculeGroup);
     const center = new THREE.Vector3();
@@ -177,7 +180,7 @@ const Viewer = (props: ViewerProps) => {
 
   onMount(() => {
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0a0a0a);
+    scene.background = new THREE.Color(0x000000);
     scene.add(moleculeGroup);
 
     camera = new THREE.PerspectiveCamera(
@@ -213,26 +216,21 @@ const Viewer = (props: ViewerProps) => {
     controls.enablePan = false;
     controls.enableDamping = true;
 
-    // --- RESPONSIVE ENGINE START ---
+    // Responsive Resize
     const handleResize = () => {
       if (!containerRef || !camera || !renderer) return;
 
       const width = containerRef.clientWidth;
       const height = containerRef.clientHeight;
 
-      // 1. Update the projection matrix aspect match
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
 
-      // 2. Adjust internal renderer buffer to prevent blurriness
       renderer.setSize(width, height);
     };
 
-    // Use a ResizeObserver instead of window.onresize so it scales perfectly 
-    // even if only a sidebar toggles or transitions, not just window shifts!
     const resizeObserver = new ResizeObserver(() => handleResize());
     resizeObserver.observe(containerRef);
-    // --- RESPONSIVE ENGINE END ---
 
     const animate = () => {
       animationId = requestAnimationFrame(animate);
@@ -247,7 +245,7 @@ const Viewer = (props: ViewerProps) => {
     });
   });
 
-  return <div ref={containerRef} class="h-full w-full bg-black" />;
+  return <div ref={containerRef} class="h-full w-full" />;
 };
 
 export default Viewer;

@@ -5,15 +5,6 @@ If you have visited `Siliconja`, then you might immedietly understand which dire
 
 Built by PubChem REST API, the platform fetches raw spatial coordinate data, processes molecular geometry vectors, and renders full WebGL assemblies on a sterile, pitch-black tactical interface.
 
-```
-┌───────────────┐      ┌─────────────┐      ┌─────────────────────────┐      ┌───────────────────┐
-│     INPUT     │ ───> │ PUBCHEM API │ ───> │        RENDERER         │ ───> │        VIEW       │
-└───────────────┘      └─────────────┘      └─────────────────────────┘      └───────────────────┘
-                                                         │
-                                                         └──> [ ERROR ]
-
-```
-
 ### Core Principles
 It is a simple and interactive website designed for exploring molecular structures in 3D. All you need to do is enter the name of the molecule; any molecule, and upon pressing enter, it verifies it using PubChem. Once fetched, the molecule is rendered in a fully interactive 3D view. Users can switch between Ball-and-Stick and Sphere visualization modes based on their preference, making it easy to examine molecular structures from different perspectives. The experience is straightforward, responsive, and focused on making molecular visualization accessible and enjoyable. The purpose is just to make chemistry intriguing and knowledgable.
 
@@ -32,7 +23,7 @@ It is a simple and interactive website designed for exploring molecular structur
 ### Note
 * It does not supports **inorganic or too large compunds**
 * There are be mismatch of **number of bonds**
-* That's it.
+* & That's it.
 ---
 
 **Developed by @codersilicon**

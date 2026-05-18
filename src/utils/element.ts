@@ -5,7 +5,6 @@ export interface ElementData {
   radius: number;
 }
 
-// Data Map indexed by Symbol
 export const ELEMENT_DATA: Record<string, ElementData> = {
   H: { symbol: "H", name: "Hydrogen", color: 0xFFFFFF, radius: 1.20 },
   HE: { symbol: "HE", name: "Helium", color: 0xFFC0CB, radius: 1.40 },
@@ -125,7 +124,7 @@ export const ELEMENT_DATA: Record<string, ElementData> = {
   OG: { symbol: "OG", name: "Oganesson", color: 0xFF001F, radius: 1.82 }
 };
 
-// Helper Map to find by Name (e.g., if user searches "Hydrogen")
+// Helper Map 
 export const ELEMENT_BY_NAME: Record<string, ElementData> = Object.values(ELEMENT_DATA).reduce((acc, el) => {
   acc[el.name.toUpperCase()] = el;
   return acc;
@@ -137,6 +136,7 @@ export const getElementInfo = (query: string): ElementData | undefined => {
   return ELEMENT_DATA[q] || ELEMENT_BY_NAME[q];
 };
 
+// Radius logic
 export const getElementRadius = (query: string): number => {
   const info = getElementInfo(query);
   return info ? info.radius : 1.5; 
